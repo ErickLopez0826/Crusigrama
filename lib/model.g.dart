@@ -157,7 +157,15 @@ class _$CrosswordWordSerializer implements StructuredSerializer<CrosswordWord> {
         specifiedType: const FullType(Direction),
       ),
     ];
-
+    Object? value;
+    value = object.hint;
+    if (value != null) {
+      result
+        ..add('hint')
+        ..add(
+          serializers.serialize(value, specifiedType: const FullType(String)),
+        );
+    }
     return result;
   }
 
@@ -199,6 +207,14 @@ class _$CrosswordWordSerializer implements StructuredSerializer<CrosswordWord> {
                     specifiedType: const FullType(Direction),
                   )!
                   as Direction;
+          break;
+        case 'hint':
+          result.hint =
+              serializers.deserialize(
+                    value,
+                    specifiedType: const FullType(String),
+                  )
+                  as String?;
           break;
       }
     }
@@ -833,6 +849,8 @@ class _$CrosswordWord extends CrosswordWord {
   final Location location;
   @override
   final Direction direction;
+  @override
+  final String? hint;
 
   factory _$CrosswordWord([void Function(CrosswordWordBuilder)? updates]) =>
       (CrosswordWordBuilder()..update(updates))._build();
@@ -841,6 +859,7 @@ class _$CrosswordWord extends CrosswordWord {
     required this.word,
     required this.location,
     required this.direction,
+    this.hint,
   }) : super._();
   @override
   CrosswordWord rebuild(void Function(CrosswordWordBuilder) updates) =>
@@ -855,7 +874,8 @@ class _$CrosswordWord extends CrosswordWord {
     return other is CrosswordWord &&
         word == other.word &&
         location == other.location &&
-        direction == other.direction;
+        direction == other.direction &&
+        hint == other.hint;
   }
 
   @override
@@ -864,6 +884,7 @@ class _$CrosswordWord extends CrosswordWord {
     _$hash = $jc(_$hash, word.hashCode);
     _$hash = $jc(_$hash, location.hashCode);
     _$hash = $jc(_$hash, direction.hashCode);
+    _$hash = $jc(_$hash, hint.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -873,7 +894,8 @@ class _$CrosswordWord extends CrosswordWord {
     return (newBuiltValueToStringHelper(r'CrosswordWord')
           ..add('word', word)
           ..add('location', location)
-          ..add('direction', direction))
+          ..add('direction', direction)
+          ..add('hint', hint))
         .toString();
   }
 }
@@ -894,6 +916,10 @@ class CrosswordWordBuilder
   Direction? get direction => _$this._direction;
   set direction(Direction? direction) => _$this._direction = direction;
 
+  String? _hint;
+  String? get hint => _$this._hint;
+  set hint(String? hint) => _$this._hint = hint;
+
   CrosswordWordBuilder();
 
   CrosswordWordBuilder get _$this {
@@ -902,6 +928,7 @@ class CrosswordWordBuilder
       _word = $v.word;
       _location = $v.location.toBuilder();
       _direction = $v.direction;
+      _hint = $v.hint;
       _$v = null;
     }
     return this;
@@ -937,6 +964,7 @@ class CrosswordWordBuilder
               r'CrosswordWord',
               'direction',
             ),
+            hint: hint,
           );
     } catch (_) {
       late String _$failedField;

@@ -38,6 +38,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/words.txt
+    - assets/hints.json
     - assets/sounds/
     - assets/music/
     - assets/images/

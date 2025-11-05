@@ -83,6 +83,10 @@ abstract class CrosswordWord
   /// The direction of this word in the crossword.
   Direction get direction;
 
+  /// The hint/clue for this word.
+  @BuiltValueField(wireName: 'hint')
+  String? get hint;
+
   /// Compare two CrosswordWord by coordinates, x then y.
   static int locationComparator(CrosswordWord a, CrosswordWord b) {
     final compareRows = a.location.y.compareTo(b.location.y);
@@ -98,11 +102,13 @@ abstract class CrosswordWord
     required String word,
     required Location location,
     required Direction direction,
+    String? hint,
   }) {
     return CrosswordWord(
       (b) => b
         ..word = word
         ..direction = direction
+        ..hint = hint
         ..location.replace(location),
     );
   }
@@ -252,6 +258,7 @@ abstract class Crossword implements Built<Crossword, CrosswordBuilder> {
     required String word,
     required Direction direction,
     bool requireOverlap = true,
+    String? hint,
   }) {
     // Require that the word is not already in the crossword.
     if (words.map((crosswordWord) => crosswordWord.word).contains(word)) {
@@ -294,6 +301,7 @@ abstract class Crossword implements Built<Crossword, CrosswordBuilder> {
             word: word,
             direction: direction,
             location: location,
+            hint: hint,
           ),
         ),
     );
@@ -303,6 +311,18 @@ abstract class Crossword implements Built<Crossword, CrosswordBuilder> {
     } else {
       return null;
     }
+  }
+
+  /// Add hints to all words in the crossword
+  Crossword addHints(Map<String, String> hints) {
+    return rebuild((b) {
+      b.words.clear();
+      for (final word in words) {
+        b.words.add(
+          word.rebuild((w) => w.hint = hints[word.word.toLowerCase()]),
+        );
+      }
+    });
   }
 
   /// As a finalize step, fill in the characters map.

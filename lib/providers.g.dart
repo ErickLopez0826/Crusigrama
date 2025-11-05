@@ -6,6 +6,26 @@ part of 'providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+String _$wordHintsHash() => r'6aa0895410b82f4caf4489125da069f312865e0d';
+
+/// A provider for the hints/clues for each word.
+///
+/// Copied from [wordHints].
+@ProviderFor(wordHints)
+final wordHintsProvider =
+    AutoDisposeFutureProvider<Map<String, String>>.internal(
+      wordHints,
+      name: r'wordHintsProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$wordHintsHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef WordHintsRef = AutoDisposeFutureProviderRef<Map<String, String>>;
 String _$wordListHash() => r'8e3e9cd4555ba4baa045ccddd8dd45a25cfb6653';
 
 /// A provider for the wordlist to use when generating the crossword.
@@ -59,7 +79,7 @@ final sizeProvider = NotifierProvider<Size, CrosswordSize>.internal(
 );
 
 typedef _$Size = Notifier<CrosswordSize>;
-String _$puzzleHash() => r'adbe0cab5ee31ef0bd0d9a26e963c047bc7bf737';
+String _$puzzleHash() => r'21c67b3e10ac2c26a3843516345daf449c294142';
 
 /// See also [Puzzle].
 @ProviderFor(Puzzle)

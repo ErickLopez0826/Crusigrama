@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'isolates.dart';
@@ -13,9 +12,22 @@ part 'providers.g.dart';
 
 const backgroundWorkerCount = 4;
 
+/// A provider for the hints/clues for each word.
+@riverpod
+Future<Map<String, String>> wordHints(ref) async {
+  try {
+    final hintsJson = await rootBundle.loadString('assets/hints.json');
+    final hintsData = json.decode(hintsJson) as Map<String, dynamic>;
+    return hintsData.map((key, value) => MapEntry(key, value.toString()));
+  } catch (e) {
+    debugPrint('Error loading hints: $e');
+    return {};
+  }
+}
+
 /// A provider for the wordlist to use when generating the crossword.
 @riverpod
-Future<BuiltSet<String>> wordList(WordListRef ref) async {
+Future<BuiltSet<String>> wordList(ref) async {
   // This codebase requires that all words consist of lowercase characters
   // in the range 'a'-'z'. Words containing uppercase letters will be
   // lowercased, and words containing runes outside this range will
@@ -64,7 +76,7 @@ class Size extends _$Size {
 }
 
 @riverpod
-Stream<model.WorkQueue> workQueue(WorkQueueRef ref) async* {
+Stream<model.WorkQueue> workQueue(ref) async* {
   final size = ref.watch(sizeProvider);
   final wordListAsync = ref.watch(wordListProvider);
   final emptyCrossword = model.Crossword.crossword(
@@ -105,8 +117,9 @@ class Puzzle extends _$Puzzle {
   model.CrosswordPuzzleGame build() {
     final wordList = ref.watch(wordListProvider).value;
     final workQueue = ref.watch(workQueueProvider).value;
+    final hints = ref.watch(wordHintsProvider).value;
 
-    if (wordList == null || workQueue == null || !workQueue.isCompleted) {
+    if (wordList == null || workQueue == null || !workQueue.isCompleted || hints == null) {
       return _currentPuzzle;
     }
 
@@ -120,6 +133,7 @@ class Puzzle extends _$Puzzle {
       compute(_createPuzzleInIsolate, (
         workQueue.crossword,
         wordList,
+        hints,
       )).then((puzzle) {
         debugPrint('✅ Puzzle created successfully with ${puzzle.alternateWords.length} locations');
         _currentPuzzle = puzzle;
@@ -213,10 +227,13 @@ class Puzzle extends _$Puzzle {
 
 // Trampoline function to create puzzle in isolate (prevents ANR)
 model.CrosswordPuzzleGame _createPuzzleInIsolate(
-  (model.Crossword, BuiltSet<String>) args,
+  (model.Crossword, BuiltSet<String>, Map<String, String>) args,
 ) {
+  // Add hints to the crossword
+  final crosswordWithHints = args.$1.addHints(args.$3);
+  
   final puzzle = model.CrosswordPuzzleGame.from(
-    crossword: args.$1,
+    crossword: crosswordWithHints,
     candidateWords: args.$2,
   );
   return puzzle;
