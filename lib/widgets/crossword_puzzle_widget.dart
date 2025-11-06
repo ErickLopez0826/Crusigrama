@@ -67,15 +67,27 @@ class _CrosswordPuzzleWidgetState extends ConsumerState<CrosswordPuzzleWidget> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Usar Pista'),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+            width: 1,
+          ),
+        ),
+        title: Text(
+          'REVELAR PALABRA',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 2,
+          ),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             if (acrossWord != null)
-              ListTile(
-                leading: const Icon(Icons.arrow_forward),
-                title: Text('Revelar palabra horizontal'),
-                subtitle: Text('${acrossWord.word.length} letras (-50 pts)'),
+              InkWell(
                 onTap: () {
                   Navigator.pop(context);
                   ref.read(puzzleProvider.notifier).revealWordHint(
@@ -84,12 +96,52 @@ class _CrosswordPuzzleWidgetState extends ConsumerState<CrosswordPuzzleWidget> {
                   );
                   ref.read(audioServiceProvider.notifier).playHintSound();
                 },
+                child: Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.arrow_forward,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 20,
+                      ),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Horizontal',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              '${acrossWord.word.length} letras • -50 pts',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
+            if (acrossWord != null && downWord != null)
+              SizedBox(height: 12),
             if (downWord != null)
-              ListTile(
-                leading: const Icon(Icons.arrow_downward),
-                title: Text('Revelar palabra vertical'),
-                subtitle: Text('${downWord.word.length} letras (-50 pts)'),
+              InkWell(
                 onTap: () {
                   Navigator.pop(context);
                   ref.read(puzzleProvider.notifier).revealWordHint(
@@ -98,13 +150,60 @@ class _CrosswordPuzzleWidgetState extends ConsumerState<CrosswordPuzzleWidget> {
                   );
                   ref.read(audioServiceProvider.notifier).playHintSound();
                 },
+                child: Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.arrow_downward,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 20,
+                      ),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Vertical',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              '${downWord.word.length} letras • -50 pts',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar'),
+            child: Text(
+              'CANCELAR',
+              style: TextStyle(
+                fontSize: 12,
+                letterSpacing: 1,
+              ),
+            ),
           ),
         ],
       ),
@@ -201,13 +300,27 @@ class _CrosswordPuzzleWidgetState extends ConsumerState<CrosswordPuzzleWidget> {
         Positioned(
           top: 70,
           right: 16,
-          child: FloatingActionButton(
-            mini: true,
-            backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-            onPressed: _showHintDialog,
-            child: Icon(
-              Icons.lightbulb_outline,
-              color: Theme.of(context).colorScheme.onSecondaryContainer,
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: _showHintDialog,
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                    width: 1,
+                  ),
+                ),
+                child: Icon(
+                  Icons.lightbulb_outline,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 20,
+                ),
+              ),
             ),
           ),
         ),
@@ -220,13 +333,23 @@ class _CrosswordPuzzleWidgetState extends ConsumerState<CrosswordPuzzleWidget> {
                     final inputState = ref.watch(crosswordInputProvider);
                     if (inputState.selectedCell == null) return const SizedBox.shrink();
                     
-                    return FloatingActionButton(
-                      mini: true,
-                      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                      onPressed: _showInputDialog,
-                      child: Icon(
-                        Icons.keyboard,
-                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    return Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: _showInputDialog,
+                        borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          padding: EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            Icons.keyboard,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            size: 24,
+                          ),
+                        ),
                       ),
                     );
                   },
@@ -241,12 +364,22 @@ class _CrosswordPuzzleWidgetState extends ConsumerState<CrosswordPuzzleWidget> {
             final inputState = ref.watch(crosswordInputProvider);
             if (inputState.selectedCell == null) {
               return Container(
-                padding: const EdgeInsets.all(16),
-                color: Theme.of(context).colorScheme.surface,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  border: Border(
+                    top: BorderSide(
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                      width: 1,
+                    ),
+                  ),
+                ),
                 child: Text(
                   'Selecciona una casilla para ver la pista',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+                    fontWeight: FontWeight.w300,
+                    letterSpacing: 0.5,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -272,16 +405,15 @@ class _CrosswordPuzzleWidgetState extends ConsumerState<CrosswordPuzzleWidget> {
             final directionText = inputState.direction == Direction.across ? 'Horizontal' : 'Vertical';
             
             return Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, -2),
+                color: Theme.of(context).colorScheme.surface,
+                border: Border(
+                  top: BorderSide(
+                    color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                    width: 1,
                   ),
-                ],
+                ),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -289,28 +421,58 @@ class _CrosswordPuzzleWidgetState extends ConsumerState<CrosswordPuzzleWidget> {
                 children: [
                   Row(
                     children: [
-                      Icon(
-                        inputState.direction == Direction.across
-                            ? Icons.arrow_forward
-                            : Icons.arrow_downward,
-                        size: 16,
-                        color: Theme.of(context).colorScheme.primary,
+                      Container(
+                        padding: EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Icon(
+                          inputState.direction == Direction.across
+                              ? Icons.arrow_forward
+                              : Icons.arrow_downward,
+                          size: 14,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        '$directionText',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).colorScheme.primary,
+                          letterSpacing: 1,
+                        ),
                       ),
                       const SizedBox(width: 8),
-                      Text(
-                        '$directionText - ${currentWord.word.length} letras',
-                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontWeight: FontWeight.bold,
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                          ),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          '${currentWord.word.length} letras',
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w400,
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   Text(
                     hint,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w400,
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.9),
+                      height: 1.4,
                     ),
                   ),
                 ],

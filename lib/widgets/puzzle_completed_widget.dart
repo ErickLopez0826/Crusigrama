@@ -67,30 +67,38 @@ class _PuzzleCompletedWidgetState
         margin: EdgeInsets.all(24),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 16,
-              offset: Offset(0, 4),
-            ),
-          ],
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+            width: 1,
+          ),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.emoji_events,
-              size: 64,
-              color: Colors.amber,
-            ),
-            SizedBox(height: 16),
-            Text(
-              '¡Puzzle Completado!',
-              style: TextStyle(
-                fontSize: 36,
-                fontWeight: FontWeight.bold,
+            Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary,
+                  width: 2,
+                ),
+              ),
+              child: Icon(
+                Icons.check,
+                size: 48,
                 color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            SizedBox(height: 24),
+            Text(
+              'COMPLETADO',
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.w300,
+                color: Theme.of(context).colorScheme.primary,
+                letterSpacing: 4,
               ),
             ),
             SizedBox(height: 32),
@@ -199,16 +207,37 @@ class _PuzzleCompletedWidgetState
               },
             ),
             SizedBox(height: 24),
-            ElevatedButton.icon(
-              onPressed: () {
-                ref.read(sizeProvider.notifier).setSize(ref.read(sizeProvider));
-                ref.read(gameTimerProvider.notifier).reset();
-              },
-              icon: Icon(Icons.refresh),
-              label: Text('Nuevo Puzzle'),
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    // Volver al menú principal
+                    Navigator.of(context).popUntil((route) => route.isFirst);
+                  },
+                  icon: Icon(Icons.home, size: 18),
+                  label: Text('MENÚ'),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    backgroundColor: Theme.of(context).colorScheme.surface,
+                    foregroundColor: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                SizedBox(width: 12),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    // Invalidar providers para regenerar el puzzle
+                    ref.invalidate(workQueueProvider);
+                    ref.invalidate(puzzleProvider);
+                    ref.read(gameTimerProvider.notifier).reset();
+                  },
+                  icon: Icon(Icons.refresh, size: 18),
+                  label: Text('NUEVO'),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

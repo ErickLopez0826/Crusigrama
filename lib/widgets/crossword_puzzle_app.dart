@@ -33,13 +33,11 @@ class _CrosswordPuzzleAppState extends ConsumerState<CrosswordPuzzleApp> {
     return _EagerInitialization(
       child: Scaffold(
         appBar: AppBar(
-          actions: [_CrosswordPuzzleAppMenu()],
-          titleTextStyle: TextStyle(
-            color: Theme.of(context).colorScheme.primary,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop(),
           ),
-          title: Text('Crossword Puzzle'),
+          title: Text('CRUCIGRAMA'),
         ),
         body: SafeArea(
           child: Consumer(
@@ -106,65 +104,3 @@ class _EagerInitialization extends ConsumerWidget {
     return child;
   }
 }
-
-class _CrosswordPuzzleAppMenu extends ConsumerWidget {
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final audioServiceAsync = ref.watch(audioServiceProvider);
-    
-    return MenuAnchor(
-      menuChildren: [
-        for (final entry in CrosswordSize.values)
-          MenuItemButton(
-            onPressed: () => ref.read(sizeProvider.notifier).setSize(entry),
-            leadingIcon: entry == ref.watch(sizeProvider)
-                ? Icon(Icons.radio_button_checked_outlined)
-                : Icon(Icons.radio_button_unchecked_outlined),
-            child: Text(entry.label),
-          ),
-        Divider(),
-        audioServiceAsync.when(
-          data: (_) {
-            final audioService = ref.read(audioServiceProvider.notifier);
-            return MenuItemButton(
-              leadingIcon: audioService.isMusicEnabled
-                  ? Icon(Icons.music_note)
-                  : Icon(Icons.music_off),
-              onPressed: () => audioService.toggleMusic(),
-              child: Text(audioService.isMusicEnabled ? 'Desactivar Música' : 'Activar Música'),
-            );
-          },
-          loading: () => MenuItemButton(
-            leadingIcon: Icon(Icons.music_note),
-            onPressed: null,
-            child: Text('Cargando Audio...'),
-          ),
-          error: (_, __) => SizedBox.shrink(),
-        ),
-        audioServiceAsync.when(
-          data: (_) {
-            final audioService = ref.read(audioServiceProvider.notifier);
-            return MenuItemButton(
-              leadingIcon: audioService.isSFXEnabled
-                  ? Icon(Icons.volume_up)
-                  : Icon(Icons.volume_off),
-              onPressed: () => audioService.toggleSFX(),
-              child: Text(audioService.isSFXEnabled ? 'Desactivar Efectos' : 'Activar Efectos'),
-            );
-          },
-          loading: () => MenuItemButton(
-            leadingIcon: Icon(Icons.volume_up),
-            onPressed: null,
-            child: Text('Cargando...'),
-          ),
-          error: (_, __) => SizedBox.shrink(),
-        ),
-      ],
-      builder: (context, controller, child) => IconButton(
-        onPressed: () => controller.open(),
-        icon: Icon(Icons.settings),
-      ),
-    );
-  }
-}
-

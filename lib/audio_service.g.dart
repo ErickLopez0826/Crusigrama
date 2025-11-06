@@ -6,7 +6,7 @@ part of 'audio_service.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$audioServiceHash() => r'1e7c369b54f9bd42309891ad38c49e92164ecf09';
+String _$audioServiceHash() => r'bf3e4c9e5595f36bd47403c28f3f0225e7ef7102';
 
 /// Audio service for managing all game sounds
 ///

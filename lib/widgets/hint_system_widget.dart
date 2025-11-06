@@ -15,56 +15,56 @@ class HintSystemWidget extends ConsumerWidget {
       top: 16,
       left: 16,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 8,
-              offset: Offset(0, 2),
-            ),
-          ],
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: hintsUsed > 0 
+                ? Theme.of(context).colorScheme.error.withOpacity(0.3)
+                : Theme.of(context).colorScheme.primary.withOpacity(0.2),
+            width: 1,
+          ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
+            Icon(
+              Icons.lightbulb_outline,
+              color: hintsUsed > 0 
+                  ? Theme.of(context).colorScheme.error
+                  : Theme.of(context).colorScheme.primary,
+              size: 18,
+            ),
+            SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.lightbulb,
-                  color: Theme.of(context).colorScheme.primary,
-                  size: 20,
-                ),
-                SizedBox(width: 8),
                 Text(
-                  'Pistas Usadas: $hintsUsed',
+                  'PISTAS: $hintsUsed',
                   style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: hintsUsed > 0 
+                        ? Theme.of(context).colorScheme.error
+                        : Theme.of(context).colorScheme.primary,
+                    letterSpacing: 1,
                   ),
                 ),
+                if (hintsUsed > 0) ...[
+                  SizedBox(height: 2),
+                  Text(
+                    '-${hintsUsed * 50} pts',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w300,
+                      color: Theme.of(context).colorScheme.error.withOpacity(0.8),
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ],
               ],
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Penalización: -${hintsUsed * 50} puntos',
-              style: TextStyle(
-                fontSize: 12,
-                color: Theme.of(context).colorScheme.error,
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Haz clic en una celda y\nselecciona "Revelar Palabra"',
-              style: TextStyle(
-                fontSize: 11,
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-              ),
             ),
           ],
         ),

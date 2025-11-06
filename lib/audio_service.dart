@@ -34,9 +34,9 @@ class AudioService extends _$AudioService {
     if (_soloud == null) return;
 
     try {
-      // Load the looped background music
-      _backgroundMusicSource = await _soloud!.loadAsset('assets/music/audio_soloud_step_06_assets_music_looped-song.ogg');
-      debugPrint('Background music loaded successfully');
+      // Load the soundtrack.wav file
+      _backgroundMusicSource = await _soloud!.loadAsset('assets/music/soundtrack.wav');
+      debugPrint('Background music (soundtrack.wav) loaded successfully');
     } catch (e) {
       debugPrint('Error loading background music: $e');
       // Try procedural generation as fallback
@@ -47,7 +47,7 @@ class AudioService extends _$AudioService {
           0.5, // scale
           0.5, // detune
         );
-        debugPrint('Using procedural background music');
+        debugPrint('Using procedural background music as fallback');
       } catch (e2) {
         debugPrint('Error generating background music: $e2');
       }

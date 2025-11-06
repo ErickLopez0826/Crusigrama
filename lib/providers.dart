@@ -89,20 +89,21 @@ Stream<model.WorkQueue> workQueue(ref) async* {
     startLocation: model.Location.at(0, 0),
   );
 
-  yield* wordListAsync.when(
-    data: (wordList) => exploreCrosswordSolutions(
+  // Check if data is available using pattern matching
+  if (wordListAsync is AsyncData<BuiltSet<String>>) {
+    final wordList = wordListAsync.value;
+    yield* exploreCrosswordSolutions(
       crossword: emptyCrossword,
       wordList: wordList,
       maxWorkerCount: backgroundWorkerCount,
-    ),
-    error: (error, stackTrace) async* {
-      debugPrint('Error loading word list: $error');
-      yield emptyWorkQueue;
-    },
-    loading: () async* {
-      yield emptyWorkQueue;
-    },
-  );
+    );
+  } else if (wordListAsync is AsyncError) {
+    debugPrint('Error loading word list: ${wordListAsync.error}');
+    yield emptyWorkQueue;
+  } else {
+    // Loading state
+    yield emptyWorkQueue;
+  }
 }
 
 @Riverpod(keepAlive: true)
@@ -115,9 +116,27 @@ class Puzzle extends _$Puzzle {
 
   @override
   model.CrosswordPuzzleGame build() {
-    final wordList = ref.watch(wordListProvider).value;
-    final workQueue = ref.watch(workQueueProvider).value;
-    final hints = ref.watch(wordHintsProvider).value;
+    // Get values safely using pattern matching
+    final wordListAsync = ref.watch(wordListProvider);
+    final workQueueAsync = ref.watch(workQueueProvider);
+    final hintsAsync = ref.watch(wordHintsProvider);
+
+    // Extract values only if they're available using type checking
+    BuiltSet<String>? wordList;
+    model.WorkQueue? workQueue;
+    Map<String, String>? hints;
+
+    if (wordListAsync is AsyncData<BuiltSet<String>>) {
+      wordList = wordListAsync.value;
+    }
+
+    if (workQueueAsync is AsyncData<model.WorkQueue>) {
+      workQueue = workQueueAsync.value;
+    }
+
+    if (hintsAsync is AsyncData<Map<String, String>>) {
+      hints = hintsAsync.value;
+    }
 
     if (wordList == null || workQueue == null || !workQueue.isCompleted || hints == null) {
       return _currentPuzzle;

@@ -44,17 +44,14 @@ class _GameTimerWidgetState extends ConsumerState<GameTimerWidget>
       top: 16,
       right: 16,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 8,
-              offset: Offset(0, 2),
-            ),
-          ],
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+            width: 1,
+          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -64,17 +61,18 @@ class _GameTimerWidgetState extends ConsumerState<GameTimerWidget>
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
-                  Icons.timer,
+                  Icons.schedule,
                   color: Theme.of(context).colorScheme.primary,
-                  size: 20,
+                  size: 18,
                 ),
-                SizedBox(width: 8),
+                SizedBox(width: 10),
                 Text(
                   elapsed.formatted,
                   style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w400,
                     color: Theme.of(context).colorScheme.primary,
+                    letterSpacing: 1,
                   ),
                 ),
               ],
@@ -90,21 +88,14 @@ class _GameTimerWidgetState extends ConsumerState<GameTimerWidget>
                       return Text(
                         'Récord: ${Duration(seconds: bestTime).formatted}',
                         style: TextStyle(
-                          fontSize: 12,
-                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w300,
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                          letterSpacing: 0.5,
                         ),
                       );
                     }
-                    return Text(
-                      'Sin récord previo',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withOpacity(0.5),
-                      ),
-                    );
+                    return SizedBox.shrink();
                   },
                   loading: () => SizedBox.shrink(),
                   error: (_, __) => SizedBox.shrink(),

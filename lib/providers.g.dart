@@ -6,7 +6,7 @@ part of 'providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$wordHintsHash() => r'6aa0895410b82f4caf4489125da069f312865e0d';
+String _$wordHintsHash() => r'944f981195d15f4bfca1114d967c165f5d538472';
 
 /// A provider for the hints/clues for each word.
 ///
@@ -26,7 +26,7 @@ final wordHintsProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef WordHintsRef = AutoDisposeFutureProviderRef<Map<String, String>>;
-String _$wordListHash() => r'8e3e9cd4555ba4baa045ccddd8dd45a25cfb6653';
+String _$wordListHash() => r'37f0d4cd5335509a97e2cc34c564b181883bb4b3';
 
 /// A provider for the wordlist to use when generating the crossword.
 ///
@@ -45,7 +45,7 @@ final wordListProvider = AutoDisposeFutureProvider<BuiltSet<String>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef WordListRef = AutoDisposeFutureProviderRef<BuiltSet<String>>;
-String _$workQueueHash() => r'f7af7a45cf9151794c25ebfc87233f6275898214';
+String _$workQueueHash() => r'b358793b53ce6cf0d5945139fd367d08063bed69';
 
 /// See also [workQueue].
 @ProviderFor(workQueue)
@@ -79,7 +79,7 @@ final sizeProvider = NotifierProvider<Size, CrosswordSize>.internal(
 );
 
 typedef _$Size = Notifier<CrosswordSize>;
-String _$puzzleHash() => r'21c67b3e10ac2c26a3843516345daf449c294142';
+String _$puzzleHash() => r'3ac49f01e75142ee17422b94a71133d925231321';
 
 /// See also [Puzzle].
 @ProviderFor(Puzzle)
